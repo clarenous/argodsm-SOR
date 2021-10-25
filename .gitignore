@@ -1,0 +1,14 @@
+# IDE
+.idea
+.vscode
+cmake-build-debug
+
+# Build
+build
+
+# Darwin
+.DS_Store
+
+# Binaries
+*.out
+*.gch
