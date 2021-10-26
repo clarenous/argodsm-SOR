@@ -12,6 +12,15 @@ void divide_params(int world_rank, int world_size, int *base_k_size, int *actual
     *actual_k_size = *base_k_size + 2;
 }
 
+void divide_location(int world_rank, int world_size, int k, int *target_world_rank, int *target_k) {
+    int base_k_size = (km + 2) / world_size;
+    *target_world_rank = k / base_k_size;
+    if (*target_world_rank >= world_size) {
+        *target_world_rank = world_size - 1;
+    }
+    *target_k = k - (*target_world_rank) * base_k_size;
+}
+
 void size_params(int base_k_size, int actual_k_size,
                  int64_t *base_2d_size, int64_t *base_3d_size, int64_t *actual_3d_size) {
     *base_2d_size = (int64_t) (im + 2) * (int64_t) (jm + 2);
@@ -114,8 +123,18 @@ void sor(float *p0, float *p1, float *rhs, int world_rank, int world_size, int a
     }
 }
 
+void print_number_from_array(float *arr, int world_rank, int world_size, int actual_k_size, int k, int j, int i) {
+    int target_world_rank, target_k;
+    divide_location(world_rank, world_size, k, &target_world_rank, &target_k);
+    if (world_rank == target_world_rank) {
+        std::cout << "" << arr[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, target_k + 1, j, i)] << "\n";
+    }
+}
+
 int main(int argc, char **argv) {
     MPI_Init(NULL, NULL);
+
+    clock_t total_start = clock();
 
     int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
@@ -142,6 +161,14 @@ int main(int argc, char **argv) {
             sor(p0, p1, rhs, world_rank, world_size, actual_k_size, base_2d_size);
         }
     }
+
+    clock_t total_end = clock();
+    double total_time = (double) (total_end - total_start) / CLOCKS_PER_SEC;
+    print_number_from_array(p0, world_rank, world_size, actual_k_size, km / 2, jm / 2, im / 2);
+    std::cout << "Total: " << total_time << std::endl;
+    delete[] p0;
+    delete[] p1;
+    delete[] rhs;
 
     MPI_Finalize();
 }
