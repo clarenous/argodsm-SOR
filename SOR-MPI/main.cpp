@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include "array_index_f2c1d.h"
 #include "sor_params.h"
+#include <unistd.h>
 
 void divide_params(int world_rank, int world_size, int *base_k_size, int *actual_k_size) {
     *base_k_size = (km + 2) / world_size;
@@ -12,13 +13,20 @@ void divide_params(int world_rank, int world_size, int *base_k_size, int *actual
     *actual_k_size = *base_k_size + 2;
 }
 
-void divide_location(int world_rank, int world_size, int k, int *target_world_rank, int *target_k) {
+void divide_location(int world_size, int k, int *target_world_rank, int *target_k) {
+    if (world_size == 1) {
+        *target_world_rank = 0;
+        *target_k = k;
+        return;
+    }
     int base_k_size = (km + 2) / world_size;
     *target_world_rank = k / base_k_size;
-    if (*target_world_rank >= world_size) {
-        *target_world_rank = world_size - 1;
+    if (*target_world_rank == 0) {
+        *target_k = k;
+    } else {
+        int k_rem = (km + 2) % world_size;
+        *target_k = k - (*target_world_rank - 1) * base_k_size - (base_k_size + k_rem);
     }
-    *target_k = k - (*target_world_rank) * base_k_size;
 }
 
 void size_params(int base_k_size, int actual_k_size,
@@ -33,11 +41,12 @@ void init_array(float **p0_ptr, float **p1_ptr, float **rhs_ptr, int actual_k_si
     *p1_ptr = new float[actual_3d_size];
     *rhs_ptr = new float[actual_3d_size];
     // initialize
-    for (int k = 0; k < actual_k_size; k += 1) {
+    for (int i = 0; i < im + 2; i += 1) {
         for (int j = 0; j < jm + 2; j += 1) {
-            for (int i = 0; i < im + 2; i += 1) {
-                (*rhs_ptr)[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)] = 1.0;
-                (*p0_ptr)[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)] = 1.0;
+            for (int k = 0; k < actual_k_size; k += 1) {
+                (*rhs_ptr)[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] = 1.0;
+                (*p0_ptr)[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] = 1.0;
+                (*p1_ptr)[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] = 0.0;
             }
         }
     }
@@ -87,48 +96,61 @@ void sor(float *p0, float *p1, float *rhs, int world_rank, int world_size, int a
     // iterations
 //    printf("computation: world_rank = %d, world_size = %d\n", world_rank, world_size);
     float rel_tmp;
-    for (int k = 1; k < actual_k_size - 1; k += 1) {
+    for (int i = 0; i < im + 2; i += 1) {
         for (int j = 0; j < jm + 2; j += 1) {
-            for (int i = 0; i < im + 2; i += 1) {
+            for (int k = 1; k < actual_k_size - 1; k += 1) {
                 if (i == im + 1) {
-                    p1[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)] =
-                            p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i - im)];
+                    p1[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] =
+                            p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i - im, j, k)];
                 } else if (i == 0) {
-                    p1[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)] =
-                            p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i + im)];
+                    p1[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] =
+                            p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i + im, j, k)];
                 } else if (j == jm + 1) {
-                    p1[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)] =
-                            p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i - 1)];
+                    p1[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] =
+                            p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i - 1, j, k)];
                 } else if (j == 0) {
                     //  We keep the original values
-                    p1[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)] =
-                            p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)];
-                } else if ((world_rank > 0 && world_rank < world_size - 1) || (world_rank == 0 && k > 1) ||
-                           (world_rank == world_size - 1 && k < actual_k_size - 2)) {
+                    p1[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] =
+                            p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)];
+                } else if ((world_size == 1 && k > 1 && k < actual_k_size - 2) ||
+                           (world_size > 1 &&
+                            ((world_rank > 0 && world_rank < world_size - 1) || (world_rank == 0 && k > 1) ||
+                             (world_rank == world_size - 1 && k < actual_k_size - 2)))) {
                     //  The actual SOR expression
                     rel_tmp = omega * (cn1 * (
-                            cn2l * p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i + 1)] +
-                            cn2s * p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i - 1)] +
-                            cn3l * p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j + 1, i)] +
-                            cn3s * p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j - 1, i)] +
-                            cn4l * p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k + 1, j, i)] +
-                            cn4s * p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k - 1, j, i)] -
-                            rhs[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)]) -
-                                       p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)]);
-                    p1[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)] =
-                            p0[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, k, j, i)] + rel_tmp;
+                            cn2l * p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i + 1, j, k)] +
+                            cn2s * p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i - 1, j, k)] +
+                            cn3l * p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j + 1, k)] +
+                            cn3s * p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j - 1, k)] +
+                            cn4l * p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k + 1)] +
+                            cn4s * p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k - 1)] -
+                            rhs[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)]) -
+                                       p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)]);
+                    p1[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] = p0[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] + rel_tmp;
                 }
             }
         }
     }
 }
 
-void print_number_from_array(float *arr, int world_rank, int world_size, int actual_k_size, int k, int j, int i) {
+void print_number_from_array(float *arr, int world_rank, int world_size, int i, int j, int k) {
     int target_world_rank, target_k;
-    divide_location(world_rank, world_size, k, &target_world_rank, &target_k);
+    divide_location(world_size, k, &target_world_rank, &target_k);
     if (world_rank == target_world_rank) {
-        std::cout << "" << arr[F3D2C_kji(actual_k_size, jm + 2, 0, 0, 0, target_k + 1, j, i)] << "\n";
+        std::cout << "" << arr[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, target_k + 1)] << "\n";
     }
+}
+
+void print_array(float *arr, int actual_k_size) {
+    std::cout << "print array start" << std::endl;
+    for (int k = 1; k < actual_k_size - 1; k++) {
+        for (int j = 0; j < jm + 2; j++) {
+            for (int i = 0; i < im + 2; i++) {
+                std::cout << arr[F3D2C(im + 2, jm + 2, 0, 0, 0, i, j, k)] << std::endl;
+            }
+        }
+    }
+    std::cout << "print array end" << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -164,8 +186,10 @@ int main(int argc, char **argv) {
 
     clock_t total_end = clock();
     double total_time = (double) (total_end - total_start) / CLOCKS_PER_SEC;
-    print_number_from_array(p0, world_rank, world_size, actual_k_size, km / 2, jm / 2, im / 2);
+    print_number_from_array(p0, world_rank, world_size, im / 2, jm / 2, km / 2);
     std::cout << "Total: " << total_time << std::endl;
+//    sleep(world_rank+2);
+//    print_array(p0, actual_k_size);
     delete[] p0;
     delete[] p1;
     delete[] rhs;

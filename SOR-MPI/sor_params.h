@@ -1,3 +1,3 @@
-const int im=256;
-const int jm=256;
-const int km=256;
+const int im=64;
+const int jm=64;
+const int km=64;
