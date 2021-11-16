@@ -54,7 +54,6 @@ void init_array(Context *ctx, float **p0_ptr, float **p1_ptr, float **rhs_ptr) {
             }
         }
     }
-    printf("Allocated float slice, actual_k_size = %d, actual_3d_size = %lld\n", actual_k_size, actual_3d_size);
 }
 
 void find_neighbor_proc(int world_rank, int world_size, int *left, int *right) {
@@ -70,7 +69,7 @@ void find_neighbor_proc(int world_rank, int world_size, int *left, int *right) {
     }
 }
 
-void sor(Context *ctx, float *p0, float *p1, float *rhs) {
+void sor(Context *ctx, float *p0, float *p1, const float *rhs) {
     // define variables
     int world_rank = ctx->world_rank;
     int world_size = ctx->world_size;
@@ -157,7 +156,7 @@ void print_number_from_array(Context *ctx, float *arr, int i, int j, int k) {
     }
 }
 
-void print_array(float *arr, int actual_k_size) {
+__attribute__((unused)) void print_array(float *arr, int actual_k_size) {
     std::cout << "print array start" << std::endl;
     for (int k = 1; k < actual_k_size - 1; k++) {
         for (int j = 0; j < jm + 2; j++) {
@@ -169,8 +168,8 @@ void print_array(float *arr, int actual_k_size) {
     std::cout << "print array end" << std::endl;
 }
 
-int main(int argc, char **argv) {
-    MPI_Init(NULL, NULL);
+int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv) {
+    MPI_Init(nullptr, nullptr);
 
     clock_t total_start = clock();
 
