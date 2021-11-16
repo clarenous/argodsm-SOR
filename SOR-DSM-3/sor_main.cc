@@ -6,8 +6,8 @@
 #include <vector>
 #include "array_index_f2c1d.h"
 #include "sor_params.h"
-#include "../../src/dsm-api.h"
-#include "../../src/dsm-C-2D-grid-halos.cc"
+#include "../src/dsm-api.h"
+#include "../src/dsm-C-2D-grid-halos.cc"
 
 typedef struct par_params {
     int i_start;

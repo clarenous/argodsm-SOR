@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 #include "array_index_f2c1d.h"
-#include "../../src/dsm-api.h"
+#include "../src/dsm-api.h"
 #include "sor_params.h"
 
 typedef struct par_params {
