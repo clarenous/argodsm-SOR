@@ -12,3 +12,4 @@ build
 # Binaries
 *.out
 *.gch
+bin/

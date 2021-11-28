@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(sample_mpi)
+project(sor_mpi)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_COMPILER mpicxx)
@@ -9,4 +9,4 @@ find_package(MPI)
 
 include_directories(${MPI_INCLUDE_PATH})
 
-add_executable(sample_mpi main.cpp)
+add_executable(sor_mpi main.cpp)

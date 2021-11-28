@@ -9,6 +9,10 @@
 #include "../src/dsm-api.h"
 #include "../src/dsm-C-2D-grid-halos.cc"
 
+#ifndef _SOR_DSM_3
+#define _SOR_DSM_3
+#endif
+
 typedef struct par_params {
     int i_start;
     int i_stop;

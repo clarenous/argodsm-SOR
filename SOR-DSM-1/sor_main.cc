@@ -7,6 +7,10 @@
 #include "../src/dsm-api.h"
 #include "sor_params.h"
 
+#ifndef _SOR_DSM_1
+#define _SOR_DSM_1
+#endif
+
 typedef struct par_params {
     int i_start;
     int i_stop;

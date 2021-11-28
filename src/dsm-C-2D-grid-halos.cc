@@ -5,8 +5,19 @@
 //     #define dsmNX 4
 //     #define dsmNY 2
 // #endif // _SOR_PARAMS_H_
-#include <sor_params.h>
 #include <iostream>
+
+#ifdef _SOR_DSM_1
+#include "../SOR-DSM-1/sor_params.h"
+#endif // _SOR_DSM_1
+
+#ifdef _SOR_DSM_2
+#include "../SOR-DSM-2/sor_params.h"
+#endif // _SOR_DSM_2
+
+#ifdef _SOR_DSM_3
+#include "../SOR-DSM-3/sor_params.h"
+#endif // _SOR_DSM_3
 
 
 void indexing_case3(DSM3DArrayH& a, int i, int j, int k, int64_t* part_idx, int64_t* sel, int64_t* comb_lin_idx) {
