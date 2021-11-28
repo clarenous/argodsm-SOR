@@ -179,6 +179,8 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv) 
     float *p0, *p1, *rhs = nullptr;
     init_array(&ctx, &p0, &p1, &rhs);
 
+    clock_t init_end = clock();
+
     const int num_iterations = 5;
     for (int iter = 1; iter <= num_iterations; iter += 1) {
         printf("num_iteration: %d / %d (world_rank = %d, world_size = %d)\n", iter, num_iterations,
@@ -192,10 +194,17 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv) 
 
     clock_t total_end = clock();
     double total_time = (double) (total_end - total_start) / CLOCKS_PER_SEC;
+    double init_time = (double) (init_end - total_start) / CLOCKS_PER_SEC;
+    double compute_time = (double) (total_end - init_end) / CLOCKS_PER_SEC;
+
     print_number_from_array(&ctx, p0, im / 2, jm / 2, km / 2);
-    std::cout << "Total: " << total_time << std::endl;
+    std::cout << "Total Time: " << total_time << std::endl;
+    std::cout << "Memory Allocation TIme: " << init_time << std::endl;
+    std::cout << "SOR Time: " << compute_time << std::endl;
+
 //    sleep(world_rank+2);
 //    print_array(p0, actual_k_size);
+
     delete[] p0;
     delete[] p1;
     delete[] rhs;

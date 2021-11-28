@@ -3,6 +3,8 @@
 #include <math.h>
 #include "array_index_f2c1d.h"
 
+// gcc sor_main.cc array_index_f2c1d.h sor_params.h -lstdc++
+
 void sor(float *p0,float *p1,float *rhs);
 
 void sor(float *p0,float *p1,float *rhs) {
@@ -87,6 +89,8 @@ int main() {
             }
         }
     }
+
+    clock_t init_end = clock();
     
     for (iter = 1;iter <= niters;iter += 1) {
         if (iter % 2 == 0) {
@@ -98,8 +102,14 @@ int main() {
 
     clock_t total_end = clock();
     double total_time = (double)(total_end - total_start) / CLOCKS_PER_SEC;
+    double init_time = (double) (init_end - total_start) / CLOCKS_PER_SEC;
+    double compute_time = (double) (total_end - init_end) / CLOCKS_PER_SEC;
+
     std::cout << p0[F3D2C(im+2,jm+2, 0,0,0,im/2,jm/2,km/2)] << "\n";
-    std::cout << "Total: " << total_time << std::endl;
+    std::cout << "Total Time: " << total_time << std::endl;
+    std::cout << "Memory Allocation TIme: " << init_time << std::endl;
+    std::cout << "SOR Time: " << compute_time << std::endl;
+
     delete[] p0;
     delete[] p1;
     delete[] rhs;

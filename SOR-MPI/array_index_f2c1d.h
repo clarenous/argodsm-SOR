@@ -1,14 +1,6 @@
 #ifndef __ARRAY_INDEX_F2C_H__
 #define __ARRAY_INDEX_F2C_H__
 
-__attribute__((always_inline)) inline unsigned int F3D2C_kji(
-        unsigned int k_rng, unsigned int j_rng, // ranges, i.e. (hb-lb)+1
-        int k_lb, int j_lb, int i_lb, // lower bounds
-        int kx, int jx, int ix
-) {
-    return (k_rng * j_rng * (ix - i_lb) + k_rng * (jx - j_lb) + kx - k_lb);
-}
-
 __attribute__((always_inline)) inline unsigned int F3D2C(
         unsigned int i_rng, unsigned int j_rng, // ranges, i.e. (hb-lb)+1
         int i_lb, int j_lb, int k_lb, // lower bounds
