@@ -1,9 +1,9 @@
 import os
 
-im_list = [16, 32, 64, 128, 256, 512]
-jm_list = [16, 32, 64, 128, 256, 512]
-km_list = [16, 32, 64, 128, 256]
-node_count_list = [1, 2, 4, 8, 16]
+im_list = [128, 256, 512]
+jm_list = [128, 256, 512]
+km_list = [64, 128, 256]
+node_count_list = [2, 8, 16]
 
 
 def create_nx_ny_list(node_count):
@@ -90,11 +90,13 @@ os.system('mkdir -p bin')
 for im in im_list:
     for jm in jm_list:
         for km in km_list:
+            already_tested_c = False
             for node_count in node_count_list:
-                print('testing item: %d %d %d %d' % (node_count, im, jm, km))
+                print('Testing item: node_count = %d, im = %d, jm = %d, km = %d' % (node_count, im, jm, km))
                 shape = (im, jm, km)
-                if node_count == 1:
+                if not already_tested_c:
                     build_and_run_c(shape)
+                    already_tested_c = True
                 build_and_run_mpi(shape, node_count)
                 build_and_run_argo(shape, node_count)
                 print()

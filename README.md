@@ -41,27 +41,25 @@ Run each implementation with `mpirun -n <node-count>`.
 
 # Test
 
-Run 900 set of tests according to the following parameters:
+Run 81 set of tests according to the following parameters:
 
 | Parameter | Values |
 |---|---|
-| im | `16`, `32`, `64`, `128`, `256`, `512` |
-| jm | `16`, `32`, `64`, `128`, `256`, `512` |
-| km | `16`, `32`, `64`, `128`, `256` |
-| node_count | `1`, `2`, `4`, `8`, `16` |
+| im | `128`, `256`, `512` |
+| jm | `128`, `256`, `512` |
+| km | `64`, `128`, `256` |
+| node_count | `2`, `8`, `16` |
 
 For each `node_count`, there are more than one pair of `dsmNX` and `dsmNY`:
 
 | Node Count | (dsmNX, dsmNY) |
 |---|---|
-| 1 | `(1, 1)` |
 | 2 | `(1, 2)`, `(2, 1)` |
-| 4 | `(1, 4)`, `(2, 2)`, `(4, 1)` |
 | 8 | `(1, 8)`, `(2, 4)`, `(4, 2)`, `(8, 1)` |
 | 16 | `(1, 16)`, `(2, 8)`, `(4, 4)`, `(8, 2)`, `(16, 1)` |
 
 Considering all possible parameters, we will launch
-9180 (`180 * 5 * 1 + 180 * 1 * 1 + 180 * (1 + 2 + 3 + 4 + 5) * 3 = 9180`) single tests.
+999 (`27 * 3 * 1 + 27 * 1 * 1 + 27 * (2 + 4 + 5) * 3 = 999`) single tests.
 
 ```bash
 nohup python testing.py >> nohup.out 2>&1 &
