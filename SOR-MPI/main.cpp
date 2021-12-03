@@ -169,6 +169,8 @@ __attribute__((unused)) void print_array(float *arr, int actual_k_size) {
 }
 
 int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv) {
+    printf("3D Size = (%d, %d, %d)\n", im, jm, km);
+
     MPI_Init(nullptr, nullptr);
 
     clock_t total_start = clock();

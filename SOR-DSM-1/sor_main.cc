@@ -237,6 +237,9 @@ void sor_par(DSMArrayPtr p0, DSMArrayPtr p1, DSMArrayPtr rhs, par_params params)
 }
 
 int main() {
+    printf("3D Size = (%d, %d, %d)\n", im, jm, km);
+    printf("dsmNX = %d, dsmNY = %d\n", dsmNX, dsmNY);
+
     // Starting barrier test!
     clock_t total_start = clock();
     clock_t init_start = clock();

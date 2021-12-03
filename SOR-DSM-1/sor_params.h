@@ -5,6 +5,6 @@ const int jm = 64;
 const int km = 64;
 const int dsmNX = 8;
 const int dsmNY = 8;
-const int niters = 60;
+const int niters = 5;
 const int mode = 2;
 #endif

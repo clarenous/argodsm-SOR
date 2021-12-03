@@ -71,6 +71,9 @@ void sor(float *p0,float *p1,float *rhs) {
 
 int main() {
     #include "sor_params.h"
+
+    printf("3D Size = (%d, %d, %d)\n", im, jm, km);
+
     clock_t total_start = clock();
     float *p0 = new float[(int64_t)(im+2)*(int64_t)(jm+2)*(int64_t)(km+2)];
     float *p1 = new float[(int64_t)(im+2)*(int64_t)(jm+2)*(int64_t)(km+2)];

@@ -5,7 +5,7 @@ const int jm = 2*1024;
 const int km = 2*128;
 const int dsmNX = 4;
 const int dsmNY = 4;
-const int niters = 60;
+const int niters = 5;
 const int mode = 2;
 #endif
 

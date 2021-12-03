@@ -144,6 +144,9 @@ void threaded_sor_loop(par_params& sub_params) {
 }
 
 int main() {
+    printf("3D Size = (%d, %d, %d)\n", im, jm, km);
+    printf("dsmNX = %d, dsmNY = %d\n", dsmNX, dsmNY);
+
     // Starting barrier test!
     clock_t total_start = clock();
     clock_t init_start = clock();
