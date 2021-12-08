@@ -91,7 +91,7 @@ The explanation for `test-results.csv` headers is as follows:
 - `im`: im from array size.
 - `jm`: jm from array size.
 - `km`: km from array size.
-- `method`: numbers from `0` to `4` represents `Reference C Code`, `MPI Code`, `ArgoDSM V1 Code`, `ArgoDSM V2 Code`, `ArgoDSM V3 Code`, respectively.
+- `method`: numbers from `0` to `4` represents `Reference C Code`, `ArgoDSM V1 Code`, `ArgoDSM V2 Code`, `ArgoDSM V3 Code`, `MPI Code`, respectively.
 - `optimized`: whether the `-O3` optimization flag has been set within `CMAKE_CXX_FLAGS`. `0` means `Not Set`, and `1` means `Set`.
 - `node_count`: number of computing nodes.
 - `dsm_nx`: `dsmNX` parameter for ArgoDSM.
@@ -104,18 +104,18 @@ It is highly recommended reading the results via `Python`:
 >>> import pandas as pd
 >>> df = pd.read_csv('test-results.csv')
 >>> df
-       im   jm   km  method  optimized  node_count  dsm_nx  dsm_ny        time
-0     128  128   64       0          0           1       0       0    0.412469
-1     128  128   64       0          1           1       0       0    0.079119
-2     128  128   64       1          0           2       0       0    0.154202
-3     128  128   64       1          0           8       0       0    0.041014
-4     128  128   64       1          0          16       0       0    0.048649
-...   ...  ...  ...     ...        ...         ...     ...     ...         ...
-1993  512  512  256       4          1          16       1      16  392.790839
-1994  512  512  256       4          1          16       2       8  220.773610
-1995  512  512  256       4          1          16       4       4  131.017681
-1996  512  512  256       4          1          16       8       2   99.353269
-1997  512  512  256       4          1          16      16       1   73.367359
+       im   jm   km  method  optimized  node_count  dsm_nx  dsm_ny      time
+0     128  128   64       0          0           1       0       0  0.412469
+1     128  128   64       0          1           1       0       0  0.079119
+2     128  128   64       1          0           2       1       2  7.100646
+3     128  128   64       1          0           2       2       1  6.763574
+4     128  128   64       1          0           8       1       8  0.426822
+...   ...  ...  ...     ...        ...         ...     ...     ...       ...
+1993  512  512  256       4          0           8       0       0  6.401710
+1994  512  512  256       4          0          16       0       0  4.882370
+1995  512  512  256       4          1           2       0       0  8.194650
+1996  512  512  256       4          1           8       0       0  1.832680
+1997  512  512  256       4          1          16       0       0  1.667990
 
 [1998 rows x 9 columns]
 ```

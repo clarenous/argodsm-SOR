@@ -97,10 +97,10 @@ type MethodType uint8
 
 const (
 	MethodRef MethodType = iota
-	MethodMPI
 	MethodArgoV1
 	MethodArgoV2
 	MethodArgoV3
+	MethodMPI
 	MethodEndTag
 )
 
@@ -464,10 +464,10 @@ func collectFromRootDir(result *Result, rootDir string, optimizationFlags [Metho
 
 func main() {
 	result := NewResult()
-	if err := collectFromRootDir(result, "results", [MethodEndTag]bool{false, false, true, true, true}); err != nil {
+	if err := collectFromRootDir(result, "results", [MethodEndTag]bool{false, true, true, true, false}); err != nil {
 		log.Fatalln("collectFromRootDir", "results", err)
 	}
-	if err := collectFromRootDir(result, "results-flags", [MethodEndTag]bool{true, true, false, false, false}); err != nil {
+	if err := collectFromRootDir(result, "results-flags", [MethodEndTag]bool{true, false, false, false, true}); err != nil {
 		log.Fatalln("collectFromRootDir", "results-flags", err)
 	}
 
