@@ -65,3 +65,71 @@ Considering all possible parameters, we will launch
 nohup python testing.py >> nohup.out 2>&1 &
 tail -f nohup.out
 ```
+
+Additionally, whether using the compiler `-O3` optimization flag may also affect the performance. So there would be actually `1998 = 999 * 2` single tests to run.
+
+# Results
+
+## Manifest
+
+The test result can be obtained from the `misc` directory.
+
+There are 5 files within `misc` directory:
+
+- `cvm-info.txt` is the test environment on Google Cloud Platform.
+- `results.tar.gz` is the original test logs collected from `main` branch.
+- `results-flags.tar.gz` is the original test logs collected from `flags` branch.
+- `test-results.csv` is the test results in CSV format, containing 1998 records.
+- `test-results.json` is the test results in JSON format, containing 1998 records.
+
+## How to read the results
+
+For each test record, `test-results.json` stores the SOR times from all computing nodes, while `test-results.csv` only stores the worst SOR time among all computing nodes.
+
+The explanation for `test-results.csv` headers is as follows:
+
+- `im`: im from array size.
+- `jm`: jm from array size.
+- `km`: km from array size.
+- `method`: numbers from `0` to `4` represents `Reference C Code`, `MPI Code`, `ArgoDSM V1 Code`, `ArgoDSM V2 Code`, `ArgoDSM V3 Code`, respectively.
+- `optimized`: whether the `-O3` optimization flag has been set within `CMAKE_CXX_FLAGS`. `0` means `Not Set`, and `1` means `Set`.
+- `node_count`: number of computing nodes.
+- `dsm_nx`: `dsmNX` parameter for ArgoDSM.
+- `dsm_ny`: `dsmNY` parameter for ArgoDSM.
+- `time`: SOR time in seconds.
+
+It is highly recommended reading the results via `Python`:
+
+```python
+>>> import pandas as pd
+>>> df = pd.read_csv('test-results.csv')
+>>> df
+       im   jm   km  method  optimized  node_count  dsm_nx  dsm_ny        time
+0     128  128   64       0          0           1       0       0    0.412469
+1     128  128   64       0          1           1       0       0    0.079119
+2     128  128   64       1          0           2       0       0    0.154202
+3     128  128   64       1          0           8       0       0    0.041014
+4     128  128   64       1          0          16       0       0    0.048649
+...   ...  ...  ...     ...        ...         ...     ...     ...         ...
+1993  512  512  256       4          1          16       1      16  392.790839
+1994  512  512  256       4          1          16       2       8  220.773610
+1995  512  512  256       4          1          16       4       4  131.017681
+1996  512  512  256       4          1          16       8       2   99.353269
+1997  512  512  256       4          1          16      16       1   73.367359
+
+[1998 rows x 9 columns]
+```
+
+## How to regenerate CSV and JSON result
+
+To regenerate `test-results.csv` and `test-results.json` from original tset logs, follow the next steps:
+
+```bash
+cd misc
+
+tar -xzf results.tar.gz
+tar -xzf results-flags.tar.gz
+
+# Golang is required.
+go run ../collector/main.go
+```
