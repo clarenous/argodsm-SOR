@@ -502,6 +502,130 @@ DirectMap1G:    35651584 kB
 
 
 
+$ dmidecode -t memory
+# dmidecode 3.1
+Getting SMBIOS data from sysfs.
+SMBIOS 2.4 present.
+
+Handle 0x0200, DMI type 16, 15 bytes
+Physical Memory Array
+	Location: Other
+	Use: System Memory
+	Error Correction Type: Multi-bit ECC
+	Maximum Capacity: 64 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 4
+
+Handle 0x7000, DMI type 17, 21 bytes
+Memory Device
+	Array Handle: 0x0200
+	Error Information Handle: Not Provided
+	Total Width: 64 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM 0
+	Bank Locator: Not Specified
+	Type: RAM
+	Type Detail: Synchronous
+
+Handle 0x7001, DMI type 17, 21 bytes
+Memory Device
+	Array Handle: 0x0200
+	Error Information Handle: Not Provided
+	Total Width: 64 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM 1
+	Bank Locator: Not Specified
+	Type: RAM
+	Type Detail: Synchronous
+
+Handle 0x7002, DMI type 17, 21 bytes
+Memory Device
+	Array Handle: 0x0200
+	Error Information Handle: Not Provided
+	Total Width: 64 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM 2
+	Bank Locator: Not Specified
+	Type: RAM
+	Type Detail: Synchronous
+
+Handle 0x7003, DMI type 17, 21 bytes
+Memory Device
+	Array Handle: 0x0200
+	Error Information Handle: Not Provided
+	Total Width: 64 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM 3
+	Bank Locator: Not Specified
+	Type: RAM
+	Type Detail: Synchronous
+
+
+
+
+========================================================================================================================
+
+
+
+
+$ mbw 8192
+Long uses 8 bytes. Allocating 2*1073741824 elements = 17179869184 bytes of memory.
+Using 262144 bytes as blocks for memcpy block copy test.
+Getting down to business... Doing 10 runs per test.
+0	Method: MEMCPY	Elapsed: 1.52251	MiB: 8192.00000	Copy: 5380.582 MiB/s
+1	Method: MEMCPY	Elapsed: 1.45864	MiB: 8192.00000	Copy: 5616.202 MiB/s
+2	Method: MEMCPY	Elapsed: 1.45751	MiB: 8192.00000	Copy: 5620.541 MiB/s
+3	Method: MEMCPY	Elapsed: 1.45690	MiB: 8192.00000	Copy: 5622.917 MiB/s
+4	Method: MEMCPY	Elapsed: 1.46151	MiB: 8192.00000	Copy: 5605.158 MiB/s
+5	Method: MEMCPY	Elapsed: 1.44751	MiB: 8192.00000	Copy: 5659.362 MiB/s
+6	Method: MEMCPY	Elapsed: 1.44266	MiB: 8192.00000	Copy: 5678.392 MiB/s
+7	Method: MEMCPY	Elapsed: 1.45596	MiB: 8192.00000	Copy: 5626.540 MiB/s
+8	Method: MEMCPY	Elapsed: 1.43717	MiB: 8192.00000	Copy: 5700.103 MiB/s
+9	Method: MEMCPY	Elapsed: 1.43972	MiB: 8192.00000	Copy: 5689.983 MiB/s
+AVG	Method: MEMCPY	Elapsed: 1.45801	MiB: 8192.00000	Copy: 5618.622 MiB/s
+0	Method: DUMB	Elapsed: 1.66986	MiB: 8192.00000	Copy: 4905.812 MiB/s
+1	Method: DUMB	Elapsed: 1.67853	MiB: 8192.00000	Copy: 4880.455 MiB/s
+2	Method: DUMB	Elapsed: 1.66071	MiB: 8192.00000	Copy: 4932.818 MiB/s
+3	Method: DUMB	Elapsed: 1.66061	MiB: 8192.00000	Copy: 4933.127 MiB/s
+4	Method: DUMB	Elapsed: 1.66276	MiB: 8192.00000	Copy: 4926.757 MiB/s
+5	Method: DUMB	Elapsed: 1.66787	MiB: 8192.00000	Copy: 4911.651 MiB/s
+6	Method: DUMB	Elapsed: 1.67282	MiB: 8192.00000	Copy: 4897.108 MiB/s
+7	Method: DUMB	Elapsed: 1.66619	MiB: 8192.00000	Copy: 4916.594 MiB/s
+8	Method: DUMB	Elapsed: 1.68595	MiB: 8192.00000	Copy: 4858.993 MiB/s
+9	Method: DUMB	Elapsed: 1.67717	MiB: 8192.00000	Copy: 4884.424 MiB/s
+AVG	Method: DUMB	Elapsed: 1.67025	MiB: 8192.00000	Copy: 4904.663 MiB/s
+0	Method: MCBLOCK	Elapsed: 1.15908	MiB: 8192.00000	Copy: 7067.687 MiB/s
+1	Method: MCBLOCK	Elapsed: 1.21843	MiB: 8192.00000	Copy: 6723.390 MiB/s
+2	Method: MCBLOCK	Elapsed: 1.21775	MiB: 8192.00000	Copy: 6727.150 MiB/s
+3	Method: MCBLOCK	Elapsed: 1.21436	MiB: 8192.00000	Copy: 6745.951 MiB/s
+4	Method: MCBLOCK	Elapsed: 1.21501	MiB: 8192.00000	Copy: 6742.315 MiB/s
+5	Method: MCBLOCK	Elapsed: 1.19182	MiB: 8192.00000	Copy: 6873.538 MiB/s
+6	Method: MCBLOCK	Elapsed: 1.15271	MiB: 8192.00000	Copy: 7106.719 MiB/s
+7	Method: MCBLOCK	Elapsed: 1.15771	MiB: 8192.00000	Copy: 7076.032 MiB/s
+8	Method: MCBLOCK	Elapsed: 1.16896	MiB: 8192.00000	Copy: 7007.963 MiB/s
+9	Method: MCBLOCK	Elapsed: 1.15560	MiB: 8192.00000	Copy: 7088.958 MiB/s
+AVG	Method: MCBLOCK	Elapsed: 1.18514	MiB: 8192.00000	Copy: 6912.246 MiB/s
+
+
+
+
+========================================================================================================================
+
+
+
+
 $ cat /proc/filesystems
 nodev	sysfs
 nodev	tmpfs
