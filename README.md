@@ -133,3 +133,14 @@ tar -xzf results-flags.tar.gz
 # Golang is required.
 go run ../collector/main.go
 ```
+
+## How to regenerate figures
+
+To regenerate figures, follow the next steps:
+
+```bash
+cd misc
+
+# numpy, pandas, matplotlib is required
+python plot.py
+```
